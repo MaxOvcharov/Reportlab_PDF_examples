@@ -9,7 +9,7 @@ elements = []
 
 styleSheet = getSampleStyleSheet()
 
-I = Image('replogo.gif')
+I = Image('BMW.gif')
 I.drawHeight = 1.25 * cm * I.drawHeight / I.drawWidth
 I.drawWidth = 1.25 * cm
 P0 = Paragraph('''
