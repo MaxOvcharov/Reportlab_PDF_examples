@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import  cm, A4
+from reportlab.lib.pagesizes import cm, A4
 from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Table
 from reportlab.lib.styles import getSampleStyleSheet
 
@@ -48,7 +49,7 @@ def main():
                            ('ALIGN', (3, 2), (3, 2), 'LEFT'),
                            ]
 
-    style1 = [('BACKGROUND', (0, 0), (-1, 0), colors.limegreen)]
+    style1 = [('BACKGROUND', (0, 0), (-1, 0), colors.Color(245, 215, 165))]
     t = Table(data, style=style)
     t._argW[3] = 1.5 * cm
 
@@ -57,7 +58,7 @@ def main():
     doc.build(elements)
 
 
-def create_table(json_data):
+def create_table_data(json_data):
     table_data = []
     # Get headers for table
     table_headers = sorted(json_data[0].keys())
@@ -79,7 +80,36 @@ def create_table(json_data):
             print('Even', tmp_row)
             table_data.append(tmp_row)
     return table_data
+
+
+def create_table_pdf(data):
+    doc = SimpleDocTemplate("json2pdf_example.pdf", pagesize=A4)
+    # container for the 'Flowable' objects
+    elements = []
+    t_data = []
+    style_sheet = getSampleStyleSheet()
+    for row in data:
+        tmp_row = []
+        for value in row:
+            p = Paragraph('<b><font color=black>%s</font></b>' % value,
+                          style_sheet["BodyText"])
+            tmp_row.append(p)
+        t_data.append(tmp_row)
+
+    style = [('BACKGROUND', (0, 0), (-1, 0), colors.Color(245, 215, 165)),
+             ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+             ('VALIGN', (0, 0), (-1, -1), 'CENTER'),
+             ('GRID', (0, 0), (-1, -1), 0.5, colors.black)]
+
+    t = Table(t_data, style=style)
+    # t._argW[len(data)] = 1.5 * cm
+
+    elements.append(t)
+    # write the document to disk
+    doc.build(elements)
+
 if __name__ == '__main__':
-    main()
-    res = create_table(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
+    # main()
+    res = create_table_data(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
     print(res)
+    create_table_pdf(res)
