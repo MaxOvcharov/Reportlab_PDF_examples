@@ -60,17 +60,26 @@ def main():
 def create_table(json_data):
     table_data = []
     # Get headers for table
-    table_headers = list(json_data[0].keys())
+    table_headers = sorted(json_data[0].keys())
     table_data.append(table_headers)
 
     data_len = len(json_data)
 
     for row in range(data_len - 1):
         if row % 2 == 0:
-            print('Odd', json_data[row])
+            tmp_row = []
+            for header in table_headers:
+                tmp_row.append(json_data[row].get(header))
+            print('Odd', tmp_row)
+            table_data.append(tmp_row)
         else:
-            print('Even', json_data[row])
-
+            tmp_row = []
+            for header in table_headers:
+                tmp_row.append(json_data[row].get(header))
+            print('Even', tmp_row)
+            table_data.append(tmp_row)
+    return table_data
 if __name__ == '__main__':
     main()
-    create_table(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
+    res = create_table(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
+    print(res)
