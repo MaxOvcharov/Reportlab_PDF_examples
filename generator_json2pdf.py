@@ -57,49 +57,40 @@ def main():
     # write the document to disk
     doc.build(elements)
 
-
-def create_table_data(json_data):
-    table_data = []
+def create_table_pdf(json_data):
+    doc = SimpleDocTemplate("json2pdf_example.pdf", pagesize=A4)
+    style_sheet = getSampleStyleSheet()
+    # container for the 'Flowable' objects
+    elements = []
     # Get headers for table
+    t_data = []
     table_headers = sorted(json_data[0].keys())
-    table_data.append(table_headers)
+    t_data.append(table_headers)
+    # set table style
+    style = [('BACKGROUND', (0, 0), (len(table_headers), 0), colors.Color(0.99, 0.84, 0.59)),
+             ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+             ('GRID', (0, 0), (-1, -1), 0.5, colors.black)]
 
-    data_len = len(json_data)
-
-    for row in range(data_len - 1):
+    for row in range(len(json_data)):
+        tmp_row = []
         if row % 2 == 0:
-            tmp_row = []
             for header in table_headers:
-                tmp_row.append(json_data[row].get(header))
-            print('Odd', tmp_row)
-            table_data.append(tmp_row)
+                value = json_data[row].get(header)
+                p = Paragraph('<b><font color=black>%s</font></b>' % value,
+                              style_sheet["BodyText"], encoding='utf8')
+                tmp_row.append(p)
         else:
             tmp_row = []
             for header in table_headers:
-                tmp_row.append(json_data[row].get(header))
-            print('Even', tmp_row)
-            table_data.append(tmp_row)
-    return table_data
-
-
-def create_table_pdf(data):
-    doc = SimpleDocTemplate("json2pdf_example.pdf", pagesize=A4)
-    # container for the 'Flowable' objects
-    elements = []
-    t_data = []
-    style_sheet = getSampleStyleSheet()
-    for row in data:
-        tmp_row = []
-        for value in row:
-            p = Paragraph('<b><font color=black>%s</font></b>' % value,
-                          style_sheet["BodyText"])
-            tmp_row.append(p)
+                value = json_data[row].get(header)
+                p = Paragraph('<b><font color=black>%s</font></b>' % value,
+                              style_sheet["BodyText"], encoding='utf8')
+                style.append(('BACKGROUND', (0, row), (len(table_headers), row), colors.Color(0.97, 0.99, 0.99)))
+                tmp_row.append(p)
         t_data.append(tmp_row)
 
-    style = [('BACKGROUND', (0, 0), (-1, 0), colors.Color(245, 215, 165)),
-             ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-             ('VALIGN', (0, 0), (-1, -1), 'CENTER'),
-             ('GRID', (0, 0), (-1, -1), 0.5, colors.black)]
+
 
     t = Table(t_data, style=style)
     # t._argW[len(data)] = 1.5 * cm
@@ -110,6 +101,4 @@ def create_table_pdf(data):
 
 if __name__ == '__main__':
     # main()
-    res = create_table_data(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
-    print(res)
-    create_table_pdf(res)
+    create_table_pdf(JSON_DATA_EXAMPLE.get('DTP_Part').get('DTP'))
