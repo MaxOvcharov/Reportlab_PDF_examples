@@ -57,6 +57,7 @@ def main():
     # write the document to disk
     doc.build(elements)
 
+
 def create_table_pdf(json_data):
     doc = SimpleDocTemplate("json2pdf_example.pdf", pagesize=A4)
     style_sheet = getSampleStyleSheet()
@@ -68,9 +69,11 @@ def create_table_pdf(json_data):
     t_data.append(table_headers)
     # set table style
     style = [('BACKGROUND', (0, 0), (len(table_headers), 0), colors.Color(0.99, 0.84, 0.59)),
-             ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+             ('ALIGN', (1, 1), (-2, -2), 'CENTER'),
              ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-             ('GRID', (0, 0), (-1, -1), 0.5, colors.black)]
+             ('LINEABOVE', (0, 0), (-1, -1), 0.05, colors.black),
+             ('LINEBELOW', (0, 1), (-1, -1), 0.05, colors.black)]
 
     for row in range(len(json_data)):
         tmp_row = []
@@ -89,8 +92,6 @@ def create_table_pdf(json_data):
                 style.append(('BACKGROUND', (0, row), (len(table_headers), row), colors.Color(0.97, 0.99, 0.99)))
                 tmp_row.append(p)
         t_data.append(tmp_row)
-
-
 
     t = Table(t_data, style=style)
     # t._argW[len(data)] = 1.5 * cm
